@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feliz Cumpleaños</title>
+    <style>
+        @keyframes confetti-fall {
+            0% { transform: translateY(-100vh) rotate(0deg); }
+            100% { transform: translateY(100vh) rotate(720deg); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background-color: #32de4c; /* Color inicial verde */
+            background-attachment: fixed;
+            overflow: hidden;
+            transition: background-color 1s ease; /* Transición suave del color de fondo */
+            position: relative; /* Para posicionar los mensajes al final */
+        }
+        h1 {
+            color: #ffffff;
+            font-size: 3em;
+            text-shadow: 2px 2px #006400;
+            display: none;
+            animation: fadeIn 2s forwards;
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        img {
+            cursor: pointer;
+            width: 200px; /* Ajusta el tamaño según sea necesario */
+            height: auto;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            transition: transform 0.2s;
+            margin: 10px;
+        }
+        img:hover {
+            transform: scale(1.1);
+        }
+        .confetti {
+            position: absolute;
+            top: -10%;
+            width: 10px;
+            height: 20px;
+            background-color: #ffdd00;
+            animation: confetti-fall 4s infinite;
+        }
+        .confetti:nth-child(2n) { background-color: #ff6347; }
+        .confetti:nth-child(3n) { background-color: #00ffff; }
+        .confetti:nth-child(4n) { background-color: #ff69b4; }
+        .confetti:nth-child(5n) { background-color: #00ff00; }
+        .confetti:nth-child(6n) { background-color: #f08080; }
+        .confetti:nth-child(7n) { background-color: #ffa500; }
+        .confetti:nth-child(8n) { background-color: #dda0dd; }
+        .hidden {
+            display: none;
+        }
+        .photo-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+            animation: fadeIn 2s forwards;
+        }
+        .final-message {
+            color: #ffffff;
+            font-size: 1.5em; /* Tamaño del texto */
+            text-shadow: 1px 1px #006400;
+            display: none; /* Ocultar al inicio */
+            animation: fadeIn 2s forwards;
+            position: absolute;
+            top: 20px;
+            left: 20px;
+        }
+        .final-message-right {
+            color: #ffffff;
+            font-size: 1.5em; /* Tamaño del texto */
+            text-shadow: 1px 1px #006400;
+            display: none; /* Ocultar al inicio */
+            animation: fadeIn 2s forwards;
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+
+        /* Estilos para dispositivos móviles */
+        @media only screen and (max-width: 600px) {
+            h1 {
+                font-size: 2em;
+            }
+            img {
+                width: 150px; /* Ajustar tamaño para pantallas más pequeñas */
+            }
+            .photo-container {
+                margin-top: 10px; /* Reducir el margen superior */
+            }
+            .final-message, .final-message-right {
+                font-size: 1em; /* Ajustar tamaño del texto final */
+                top: 10px; /* Posicionar mensajes finales más arriba */
+            }
+        }
+    </style>
+    <script>
+        const colores = ['#ff6347', '#00ffff', '#ff69b4', '#00ff00', '#f08080', '#ffa500', '#dda0dd']; // Lista de colores
+        let indiceColor = 0; // Índice para recorrer la lista de colores
+
+        function mostrarMensaje() {
+            document.getElementById('mensaje').style.display = 'block';
+            document.getElementById('regalo').style.display = 'none';
+            document.getElementById('audio').play();
+            lanzarConfetti();
+            setTimeout(mostrarFotos, 2000); // Mostrar fotos después de 2 segundos
+            cambiarColorFondo(); // Cambiar color de fondo después de mostrar las fotos
+        }
+
+        function lanzarConfetti() {
+            for (let i = 0; i < 100; i++) {
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti');
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.animationDuration = Math.random() * 3 + 2 + 's';
+                document.body.appendChild(confetti);
+            }
+        }
+
+        function mostrarFotos() {
+            const fotos = document.querySelectorAll('.hidden');
+            fotos.forEach(foto => {
+                foto.classList.remove('hidden');
+            });
+            mostrarMensajesFinales(); // Mostrar mensajes finales después de mostrar las fotos
+        }
+
+        function mostrarMensajesFinales() {
+            document.querySelector('.final-message').style.display = 'block';
+            document.querySelector('.final-message-right').style.display = 'block';
+        }
+
+        function cambiarColorFondo() {
+            // Cambiar el color de fondo a un color de la lista
+            document.body.style.backgroundColor = colores[indiceColor];
+            indiceColor = (indiceColor + 1) % colores.length; // Avanzar al siguiente color
+
+            if (indiceColor === 0) {
+                // Si se vuelve al verde inicial, muestra el mensaje de nuevo
+                setTimeout(() => {
+                    document.getElementById('mensaje').style.display = 'block';
+                }, 1000);
+            } else {
+                // Si no es el color verde inicial, sigue cambiando el color
+                setTimeout(cambiarColorFondo, 1000);
+            }
+        }
+    </script>
+</head>
+<body>
+    <img id="regalo" src="regalo.png" alt="Regalo" onclick="mostrarMensaje()">
+    <h1 id="mensaje">¡Feliz Cumpleaños Marcia! :D</h1>
+    <audio id="audio" src="feliz_cumpleaños.mp3"></audio>
+    <div class="photo-container">
+        <img src="foto1.jpg" alt="Foto 1" class="hidden">
+        <img src="foto2.jpg" alt="Foto 2" class="hidden">
+        <img src="foto3.jpg" alt="Foto 3" class="hidden">
+        <img src="foto4.jpg" alt="Foto 4" class="hidden">
+    </div>
+    <div class="final-message">Espero que lo pases bien en este día tan especial</div>
+    <div class="final-message-right">Éxitos en todo lo que te propongas</div>
+</body>
+</html>
+
+
+
